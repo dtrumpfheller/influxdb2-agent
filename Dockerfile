@@ -9,6 +9,7 @@ WORKDIR /go/src/github.com/dtrumpfheller/influxdb2-agent
 COPY go.mod .
 COPY go.sum .
 RUN go mod download
+RUN go mod verify
 
 COPY *.go .
 COPY helpers/*.go ./helpers/
@@ -23,6 +24,8 @@ RUN CGO_ENABLED=0 go build -o /go/bin/app .
 
 FROM gcr.io/distroless/static
 
-COPY --from=builder /go/bin/app /
+USER nobody:nobody
 
-ENTRYPOINT ["/app"]
+COPY --from=builder --chown=nobody:nobody /go/bin/app /influxdb2-agent/
+
+ENTRYPOINT ["/influxdb2-agent/app"]
