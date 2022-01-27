@@ -16,13 +16,13 @@ The data is loaded from InfluxDB2 via one or multiple flux queries that need to 
 Example query:
 ```
   from(bucket: "weather")
-  |> range(start: -60h)
+  |> range(start: -72h)
   |> filter(fn: (r) => r["_measurement"] == "openweathermap")
   |> filter(fn: (r) => r["_field"] == "main_temp")
-  |> aggregateWindow(every: 90m, fn: mean)
+  |> aggregateWindow(every: 108m, fn: mean)
   |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field:"temperature", location:"Outside" }))'
 ```
-This query will load the temperature values for the last 60h and aggregate them into 90m intervals.
+This query will load the temperature values for the last 3 days and aggregate them into 108m intervals. My LilyGo weather station uses 40 measurments and thus the 108m. Always use full days.
 
 Currently following attributes in the flux response are extracted:
 | Name        | Mandatory | Comment        |
@@ -63,7 +63,7 @@ Example **config.yml** file;
   token: "abcd"
   weather:
     queries:
-      - 'from(bucket: "weather") |> range(start: -60h) |> filter(fn: (r) => r["_measurement"] == "openweathermap") |> filter(fn: (r) => r["_field"] == "main_temp") |> aggregateWindow(every: 90m, fn: mean) |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field:"temperature", location:"Outside" }))'
+      - 'from(bucket: "weather") |> range(start: -72h) |> filter(fn: (r) => r["_measurement"] == "openweathermap") |> filter(fn: (r) => r["_field"] == "main_temp") |> aggregateWindow(every: 108m, fn: mean) |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field:"temperature", location:"Outside" }))'
 ```
 
 | Name            | Description                              |
