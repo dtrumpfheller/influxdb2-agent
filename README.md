@@ -54,13 +54,14 @@ Example response:
 ```
 
 ## Configuration
-The the configuration file must be a valid YAML file. Its path can be passed into the application as argument, else **config.yml** is assumed.
+The configuration file must be a valid YAML file. Its path can be passed into the application as argument, else **config.yml** is assumed.
 
 Example **config.yml** file;
 ```
   port: 9098
   influxDB2: http://127.0.0.1:9086
   token: "abcd"
+  organization: "home"
   weather:
     queries:
       - 'from(bucket: "weather") |> range(start: -72h) |> filter(fn: (r) => r["_measurement"] == "openweathermap") |> filter(fn: (r) => r["_field"] == "main_temp") |> aggregateWindow(every: 108m, fn: mean) |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field:"temperature", location:"Outside" }))'
@@ -71,6 +72,7 @@ Example **config.yml** file;
 | port            | port on which this agent will listen     |
 | influxDB2       | address of InfluxDB2 server              |
 | token           | auth token to access InfluxDB2 server    |
+| organization    | organization of InfluxDB2 server         |
 | weather.queries | 1..n flux queries to gather weather data |
 
 ## Docker

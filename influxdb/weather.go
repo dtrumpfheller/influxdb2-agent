@@ -24,7 +24,7 @@ func GetWeather(config helpers.Config) ([]byte, error) {
 
 	// create client objects
 	client := influxdb2.NewClient(config.InfluxDB2, config.Token)
-	queryAPI := client.QueryAPI("home")
+	queryAPI := client.QueryAPI(config.Organization)
 
 	for _, query := range config.Weather.Queries {
 		// execute flux query
