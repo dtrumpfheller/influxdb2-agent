@@ -9,14 +9,16 @@ import (
 )
 
 type Config struct {
-	Port         int     `yaml:"port"`
-	InfluxDB2    string  `yaml:"influxDB2"`
-	Token        string  `yaml:"token"`
-	Organization string  `yaml:"organization"`
-	Weather      Weather `yaml:"weather"`
+	Port         int        `yaml:"port"`
+	InfluxDB2    string     `yaml:"influxDB2"`
+	Token        string     `yaml:"token"`
+	Organization string     `yaml:"organization"`
+	Endpoints    []Endpoint `yaml:"endpoints"`
 }
 
-type Weather struct {
+type Endpoint struct {
+	Name    string   `yaml:"name"`
+	Type    string   `yaml:"type"`
 	Queries []string `yaml:"queries"`
 }
 

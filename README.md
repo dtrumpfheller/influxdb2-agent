@@ -2,9 +2,10 @@
 The InfluxDB2 Agent was build for my [LilyGo Weather Station]() to move complexity out of the station itself. Less processing means less energy consumption with is key for a battery operated device. The agent provides http endpoints that returns cumulated data that was extracted with 1..n flux queries from an InfluxDB2 database.
 
 ## Endpoints
-Currently it supports only loading of weather data via the [/weather](/weather) endpoint.
+The endpoints are fully configurable. Based on the type a different mapping is used.
+Currently only 'weather' is supported.
 
-### [/weather](/weather) Endpoint
+### Weather Type
 Returns weather data for various locations.
 
 The **location** is important as the weather data is grouped by it.
@@ -62,18 +63,22 @@ Example **config.yml** file;
   influxDB2: http://127.0.0.1:9086
   token: "abcd"
   organization: "home"
-  weather:
-    queries:
-      - 'from(bucket: "weather") |> range(start: -72h) |> filter(fn: (r) => r["_measurement"] == "openweathermap") |> filter(fn: (r) => r["_field"] == "main_temp") |> aggregateWindow(every: 108m, fn: mean) |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field:"temperature", location:"Outside" }))'
+  endpoints:
+    - name: "/weather"
+      type: "weather"
+      queries:
+        - 'from(bucket: "weather") |> range(start: -72h) |> filter(fn: (r) => r["_measurement"] == "openweathermap") |> filter(fn: (r) => r["_field"] == "main_temp") |> aggregateWindow(every: 108m, fn: mean) |> map(fn: (r) => ({ _value:r._value, _time:r._time, _field:"temperature", location:"Outside" }))'
 ```
 
-| Name            | Description                              |
-|-----------------|------------------------------------------|
-| port            | port on which this agent will listen     |
-| influxDB2       | address of InfluxDB2 server              |
-| token           | auth token to access InfluxDB2 server    |
-| organization    | organization of InfluxDB2 server         |
-| weather.queries | 1..n flux queries to gather weather data |
+| Name              | Description                           |
+|-------------------|---------------------------------------|
+| port              | port on which this agent will listen  |
+| influxDB2         | address of InfluxDB2 server           |
+| token             | auth token to access InfluxDB2 server |
+| organization      | organization of InfluxDB2 server      |
+| endpoints.name    | url path                              |
+| endpoints.type    | type of endpoint, needed for mapping  |
+| endpoints.queries | 1..n flux queries to gather data      |
 
 ## Docker
 The agent was written with the intent of running it in docker. You can also run it directly if this is preferred.

@@ -18,7 +18,7 @@ type Location struct {
 	Co2         []float64 `json:"co2,omitempty"`
 }
 
-func GetWeather(config helpers.Config) ([]byte, error) {
+func GetWeather(config helpers.Config, endpoint helpers.Endpoint) ([]byte, error) {
 
 	locations := make(map[string]Location)
 
@@ -26,7 +26,7 @@ func GetWeather(config helpers.Config) ([]byte, error) {
 	client := influxdb2.NewClient(config.InfluxDB2, config.Token)
 	queryAPI := client.QueryAPI(config.Organization)
 
-	for _, query := range config.Weather.Queries {
+	for _, query := range endpoint.Queries {
 		// execute flux query
 		result, err := queryAPI.Query(context.Background(), query)
 		if err != nil {
